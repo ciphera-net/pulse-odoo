@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Adds the Pulse Analytics tracking tag to every page the Website app
+        renders through "website.layout" — the same anchor Odoo's own
+        "Custom Code" feature uses (see custom_code_layout in
+        addons/website/views/website_templates.xml), confirmed against the
+        Odoo 20.0 source before this was written (RELEASING.md records how).
+
+        Deliberately static: no t-if, t-esc or t-att anywhere in this file.
+        The element below is exactly the bytes that land in the page, modulo
+        whatever QWeb's HTML serializer does with the "defer" attribute and
+        attribute order — see tests/test_pulse_analytics.py and
+        scripts/verify.sh for what is actually asserted versus merely
+        intended here.
+
+        No data-domain attribute: the tracker auto-detects the hostname from
+        the visitor's browser. This module offers no domain setting — see
+        README.md "Settings" for why that is an honest limitation of a
+        pure-XML module, not an oversight.
+
+        website.layout is Odoo's public frontend layout. It is never used to
+        render the backend (/odoo, /web), so this tag cannot leak onto an
+        admin screen — there is nothing to exclude and so no toggle for it.
+    -->
+    <template id="pulse_analytics_tracker" name="Pulse Analytics tracker" inherit_id="website.layout">
+        <xpath expr="//head" position="inside">
+            <script defer="defer" src="https://js.ciphera.net/script.js"></script>
+        </xpath>
+    </template>
+</odoo>
