@@ -157,8 +157,9 @@ verbatim from gnu.org, matching the file list `git ls-files` shows.
 
 ## Still needed before publishing — real, not fabricated
 
-🟢 **The icon and description page were built 14-10-2026** (branch
-`listing-assets`, not merged or pushed — that task forbade any remote action).
+🟢 **The icon and description page were built 14-10-2026** and are on `main`
+and `20.0` (reviewed before the push: icon spans closed explicitly, the sign-up
+address named in plain text).
 What that work found and did, each measured against real accepted modules
 rather than guessed — see `LISTING.md` "Screenshots and images needed before
 publishing" for the full detail and the "Why no cover image" / "Why no
@@ -206,19 +207,14 @@ hyperlinks" sections for the two things deliberately left out:
 
 | Step | Needs | Who/what |
 |---|---|---|
-| Push the repo to GitHub as `ciphera-net/pulse-odoo`, branch `20.0` | a GitHub account with create-repo rights on `ciphera-net` | the project's canonical git identity |
-| Authorise Odoo's access | GitHub repo Settings → Collaborators, invite `online-odoo` on this repo specifically | GitHub repo admin |
+| ✅ Push the repo to GitHub as `ciphera-net/pulse-odoo`, branch `20.0` (done 14-10-2026) | a GitHub account with create-repo rights on `ciphera-net` | the project's canonical git identity |
+| ✅ Authorise Odoo's access (invite sent 14-10-2026, read-only) | GitHub repo Settings → Collaborators, invite `online-odoo` on this repo specifically | GitHub repo admin |
 | Register the repository | an apps.odoo.com account, signed in, `apps/upload` → "Register your Git repository" with the `ssh://git@github.com/ciphera-net/pulse-odoo#20.0` URL | an Odoo.com account (create one if none exists; this is a separate credential from GitHub) |
-| Merge `listing-assets` (the icon and `index.html` are already built and committed there) | a reviewer, then a push to `main`/`20.0` | repo admin |
+| ✅ Icon and `index.html` on `main`/`20.0` (14-10-2026) | a reviewer, then a push | repo admin |
 | Watch for a scan error | re-reading the module page after registering, or after any push | same apps.odoo.com account |
 
-Nothing above was done by this task — it runs under hard limits that forbid
-any remote, push, or publish (see the task's own scope note). This file
-records the exact steps and their prerequisites so a human or a later,
-explicitly-authorised session can execute them without re-deriving any of this.
-The icon and description page themselves no longer need a human — they were
-built locally (see "Still needed before publishing" above) and sit committed
-on `listing-assets`, waiting on exactly the merge-and-push row above.
+What is left is the registration itself: an apps.odoo.com account, then
+`apps/upload` → "Register your Git repository" with the `20.0` URL above.
 
 ## No CI — but `scripts/verify.sh` has now been run for real
 
