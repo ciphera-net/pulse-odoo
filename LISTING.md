@@ -11,7 +11,7 @@ remote, push or publish action; this file is the copy ready for whoever runs
 that step, matching the pattern of `pulse-joomla/LISTING.md`.
 
 🟢 **`static/description/icon.png` and `static/description/index.html` now
-exist** (branch `listing-assets`, not yet merged or pushed) — see "Screenshots
+exist** (on `main` and `20.0` since 14-10-2026) — see "Screenshots
 and images needed before publishing" below for what was built and why, and
 RELEASING.md for how the icon size and the index.html structure were measured
 against real accepted modules rather than guessed.
