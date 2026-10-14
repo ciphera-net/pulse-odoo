@@ -105,14 +105,21 @@ docker exec "$DB_CONTAINER" pg_isready -U odoo >/dev/null 2>&1 \
 #
 #   addons_src  the directory bind-mounted as /mnt/extra-addons/pulse_analytics
 #   db_name     the database this run installs into
+#   modules     comma-separated -i list (default: website,pulse_analytics).
+#               The negative-control call below passes "website" alone so
+#               pulse_analytics is mounted but genuinely never installed —
+#               passing the wrong default here silently defeated that control
+#               on the first real run (it installed pulse_analytics into
+#               pulse_verify_control too, so the "negative" control was
+#               serving the tag same as the real case).
 install_and_init() {
-  local addons_src="$1" db_name="$2" container_suffix="$3"
-  echo "==> installing into database '$db_name' from $addons_src"
+  local addons_src="$1" db_name="$2" container_suffix="$3" modules="${4:-website,pulse_analytics}"
+  echo "==> installing into database '$db_name' from $addons_src (modules: $modules)"
   docker run --rm --name "${APP_CONTAINER}-${container_suffix}" --network "$NET" \
     -e HOST="$DB_CONTAINER" -e USER=odoo -e PASSWORD="$DB_PASSWORD" \
     -v "$addons_src":/mnt/extra-addons/pulse_analytics:ro \
     "$ODOO_IMAGE" \
-    odoo -d "$db_name" -i website,pulse_analytics --without-demo=all --stop-after-init
+    odoo -d "$db_name" -i "$modules" --without-demo=all --stop-after-init
 }
 
 # Positive case: the real module, unmodified.
@@ -128,7 +135,7 @@ fi
 # image, same addons mount (harmless — it is just never passed to -i), proves
 # the checks below are not seeing a tag that was already baked into the base
 # image or into some other addon.
-install_and_init "$MODULE_SRC" pulse_verify_control control-init >/dev/null
+install_and_init "$MODULE_SRC" pulse_verify_control control-init website >/dev/null
 CONTROL_INSTALL_STATUS=$?
 [ "$CONTROL_INSTALL_STATUS" -eq 0 ] \
   || { echo "REFUSING: the control database (no pulse_analytics) failed to even install website"; exit 1; }
@@ -160,11 +167,23 @@ fi
 
 # ── Serve the positive-case database and read its HTML ───────────────────────
 echo "==> starting Odoo to serve 'pulse_verify'"
+# --http-interface=0.0.0.0: Odoo 20.0 changed tools/config.py's default for
+# --http-interface to 127.0.0.1 (previously effectively "all interfaces" —
+# config['http_interface'] or '0.0.0.0' is the fallback, but 20.0 adds "ensure
+# default http_interface is set" and hardcodes 127.0.0.1 when unset). The
+# server then binds and logs "HTTP service running on 127.0.0.1:8069" — loopback
+# INSIDE the container's own network namespace, which Docker's -p publish
+# cannot reach (it forwards to the container's external interface, not its
+# loopback). Confirmed with docker exec curl: 127.0.0.1:8069 inside the
+# container answers 200, the container's own bridge IP answers nothing. First
+# real run of this script hung on "waiting for http://127.0.0.1:18069/" and
+# then failed with "did not return a real page (got 0 bytes)" for exactly
+# this reason — not a problem with the module.
 docker run -d --name "$APP_CONTAINER" --network "$NET" -p "${HTTP_PORT}:8069" \
   -e HOST="$DB_CONTAINER" -e USER=odoo -e PASSWORD="$DB_PASSWORD" \
   -v "$MODULE_SRC":/mnt/extra-addons/pulse_analytics:ro \
   "$ODOO_IMAGE" \
-  odoo -d pulse_verify "--db-filter=^pulse_verify\$" >/dev/null
+  odoo -d pulse_verify "--db-filter=^pulse_verify\$" --http-interface=0.0.0.0 >/dev/null
 
 echo "==> waiting for http://127.0.0.1:${HTTP_PORT}/"
 for _ in $(seq 1 60); do
@@ -239,7 +258,7 @@ echo "==> starting a second Odoo instance to serve the no-module control databas
 docker run -d --name "${APP_CONTAINER}-control" --network "$NET" -p "${CONTROL_PORT}:8069" \
   -e HOST="$DB_CONTAINER" -e USER=odoo -e PASSWORD="$DB_PASSWORD" \
   "$ODOO_IMAGE" \
-  odoo -d pulse_verify_control "--db-filter=^pulse_verify_control\$" >/dev/null
+  odoo -d pulse_verify_control "--db-filter=^pulse_verify_control\$" --http-interface=0.0.0.0 >/dev/null
 
 for _ in $(seq 1 60); do
   curl -sf -o /dev/null "http://127.0.0.1:${CONTROL_PORT}/" && break
