@@ -10,6 +10,12 @@ why it was not done here.
 remote, push or publish action; this file is the copy ready for whoever runs
 that step, matching the pattern of `pulse-joomla/LISTING.md`.
 
+🟢 **`static/description/icon.png` and `static/description/index.html` now
+exist** (branch `listing-assets`, not yet merged or pushed) — see "Screenshots
+and images needed before publishing" below for what was built and why, and
+RELEASING.md for how the icon size and the index.html structure were measured
+against real accepted modules rather than guessed.
+
 ## Where the fields come from
 
 Most of this listing is **not a web form** the way Joomla's JED or Google's GTM
@@ -107,30 +113,79 @@ Website `https://pulse.ciphera.net` · Documentation
 
 ## Screenshots and images needed before publishing
 
-None exist in this repository yet — see RELEASING.md "Still needed before
-publishing." What the store actually uses, per the FAQ:
+🟢 **Icon and description page built** (see below); the cover image was
+deliberately **not** added — see "Why no cover image" below.
 
-- **`static/description/icon.png`** — a real PNG (not a renamed file of
-  another format), square. Shows as a white cube until this exists.
-- **A cover image / thumbnail**, referenced from the manifest's `images` key
-  (e.g. `'images': ['static/description/images/cover_screenshot.png']`) — the
-  FAQ: *"the first picture with a name ending with '_screenshot' will be
-  selected and displayed as big screenshot... to show a full demo page and not
-  your company logo larger."* So this should be a real screenshot of a Pulse
-  dashboard (or the rendered tag in a page's `<head>` via dev tools), not the
-  Pulse logo blown up.
-- Both need to come from the same Pulse-mark asset pipeline the other
-  platform listings use (`pulse-framer/listing/`), not be drawn fresh for this
-  one listing.
+- **`static/description/icon.png`** — ✅ done. 128×128 PNG, RGBA, transparent
+  background, the Pulse mark alone (never paired with Odoo's own mark). The
+  size was not guessed: `static/description/icon.png` was read directly off
+  three real, accepted free modules on the Odoo Apps store (measured
+  14-10-2026) — `OCA/website`'s `website_analytics_matomo` (the closest
+  comparable, an analytics module) and `website_cookiebot` are both **128×128
+  with a transparent corner**; `website_require_login` matches; Odoo's own
+  core `website`/`website_sale`/`website_blog` modules use 100×100 and OCA's
+  `website_google_tag_manager` uses 70×70 — all square, all transparent, none
+  on a solid tile. Built from `thumbnail-480-transparent.png` (the Pulse mark
+  on a transparent 480×480 tile, from the 12-10-2026 Product Hunt asset set),
+  resized down with Pillow's Lanczos filter — not the `-dark` variant, because
+  every real icon measured has a transparent corner, not a solid background.
+- **`static/description/index.html`** — ✅ done. Built from the exact template
+  `apps.odoo.com/apps/faq` names as official
+  (`github.com/odoo/odoo/blob/11.0/addons/crm/static/description/index.html`):
+  `oe_container`/`oe_row oe_spaced`/`oe_slogan`/`oe_span6`/`oe_span12`/
+  `oe_dark`/`oe_mt*`/`oe_mb*` classes, no `<script>`, no `<style>` block, no
+  external links other than a plain-text mention of `docs.ciphera.net/pulse`
+  (not a hyperlink — see "Why no hyperlinks" below). Cross-checked against
+  real modules' own `index.html` (`odoo/odoo`'s `website`, `project`,
+  `mass_mailing`, `point_of_sale` at the 11.0 tag the FAQ itself links) for
+  the class vocabulary, including an all-text two-column section with no
+  screenshot at all (`website`'s own "SEO Tools" / "Call to Action" pair),
+  which is the shape this module's page follows throughout since there is no
+  dashboard screenshot to show.
+
+### Why no cover image
+
+The manifest's `images` key was **not** added. Measured against the three
+closest real precedents on `OCA/website` (14-10-2026): the directly-comparable
+analytics module, `website_analytics_matomo`, has no `images` key at all;
+neither does `website_cookiebot`. `website_google_tag_manager` does declare
+one (`static/description/website_google_tag_manager.png`) — but that exact
+file **404s** in the published repository, i.e. even an accepted, listed
+module ships a dead reference for this field, which is further evidence it is
+optional and not load-bearing. The FAQ's own description of the field — *"to
+show a full demo page and not your company logo larger"* — describes exactly
+the trap a Pulse cover would fall into: this module has no UI of its own to
+screenshot, so any image here would be the Pulse mark blown up, the one thing
+the guidance says not to do. The icon already carries the mark; a cover adding
+nothing but a bigger copy of it is skipped. (This updates the "should be a
+real screenshot of a Pulse dashboard... not the Pulse logo blown up" line that
+used to be here — RELEASING.md "Still needed before publishing" still listed
+it as outstanding before this measurement.)
+
+### Why no hyperlinks in index.html
+
+The vendor guidelines restrict `index.html` links to resources inside
+`static/description`, canonical YouTube/Microsoft Teams URLs, and `mailto:`/
+`skype:` — not a generic marketing or docs URL. Confirmed by absence: across
+the five real `index.html` files read for this (the official template plus
+`website`/`project`/`mass_mailing`/`point_of_sale`), the only non-local `href`
+found anywhere is one YouTube link; nothing links to the vendor's own site.
+So `docs.ciphera.net/pulse` is written as plain text in the description page,
+not wrapped in `<a href>` — the manifest's own `website`/`support` keys (see
+`__manifest__.py`) are what the Apps store itself turns into the listing's
+"Author Website" and support links, outside this file.
 
 ## Scoring
 
 The vendor guidelines publish five ranking criteria directly: no icon, no cover
 image, no licence set in the manifest, a rating below 3, and a non-HTML
 description (e.g. plain `.rst`) each cost points, independent of anything about
-the module's functionality. This module already has `license` set in the
-manifest; the icon, cover image and an HTML `static/description/index.html`
-are the three open items against that list (see above).
+the module's functionality. This module has `license` set in the manifest, a
+real `icon.png`, and an HTML `index.html` — three of the five addressed. "No
+cover image" is the one still true here, deliberately — see "Why no cover
+image" above for why a Pulse cover would cost more than the ranking point it
+buys (it would be the logo blown up, which the FAQ names as the thing to
+avoid). Rating is outside this task's control until the module has reviews.
 
 ## Trademark
 

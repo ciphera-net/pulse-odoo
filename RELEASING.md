@@ -157,30 +157,50 @@ verbatim from gnu.org, matching the file list `git ls-files` shows.
 
 ## Still needed before publishing — real, not fabricated
 
-Not included in this repository, and intentionally not fabricated to fill a
-checklist:
+🟢 **The icon and description page were built 14-10-2026** (branch
+`listing-assets`, not merged or pushed — that task forbade any remote action).
+What that work found and did, each measured against real accepted modules
+rather than guessed — see `LISTING.md` "Screenshots and images needed before
+publishing" for the full detail and the "Why no cover image" / "Why no
+hyperlinks" sections for the two things deliberately left out:
 
-- **`pulse_analytics/static/description/icon.png`** — from the FAQ: *"the
-  module icon needs to be located at `static/description/icon.png`... Please
-  note that changing the file extension of an image does not change its
-  format"* (it must be a real PNG, not a renamed one). Without it, the FAQ says
-  the listing shows a white cube. Generate from the same Pulse-mark asset
-  pipeline the other platform listings use (`pulse-framer/listing/`,
-  referenced the same way from `pulse-joomla/LISTING.md`), not drawn fresh here.
-- **`pulse_analytics/static/description/index.html`** — the FAQ: *"The
-  rich-text HTML description comes from the static/description/index.html file
-  ... It is recommended to start with this official template."* The copy for
-  it is drafted in LISTING.md; turning it into that template's HTML is a
-  publishing-time step, since the vendor guidelines forbid inline styles/JS
-  outside Bootstrap 4 utility classes and the official template already
-  satisfies that.
-- **A cover image** (`images` manifest key) — optional, improves the Apps
-  Store ranking score (see LISTING.md "Scoring").
+- **`pulse_analytics/static/description/icon.png`** — done. From the FAQ:
+  *"the module icon needs to be located at `static/description/icon.png`...
+  Please note that changing the file extension of an image does not change
+  its format"* (it must be a real PNG, not a renamed one) — satisfied: a real
+  128×128 RGBA PNG, built by resizing the Pulse mark (not drawn fresh), with
+  Pillow's Lanczos filter, no Docker involved. The FAQ names no size, so
+  128×128 was read directly off three real, accepted free Odoo modules
+  (`OCA/website`'s `website_analytics_matomo`, `website_cookiebot`,
+  `website_require_login`, all 128×128 with a transparent corner — core Odoo
+  modules measure 100×100, one OCA module 70×70, so "square and transparent"
+  is the invariant, not one exact pixel count).
+- **`pulse_analytics/static/description/index.html`** — done. The FAQ:
+  *"The rich-text HTML description comes from the static/description/index.html
+  file ... It is recommended to start with this official template"*, linking
+  `github.com/odoo/odoo/blob/11.0/addons/crm/static/description/index.html` —
+  that exact template's class vocabulary (`oe_container`, `oe_slogan`,
+  `oe_span6`/`oe_span12`, `oe_dark`, `oe_mt*`/`oe_mb*`) is what this file
+  uses, cross-checked against `odoo/odoo`'s own `website`, `project`,
+  `mass_mailing` and `point_of_sale` description pages at the same 11.0 tag.
+  No `<script>`, no `<style>` block, only `style="color:…"` on headings (one
+  of the attributes the vendor guidelines name as permitted alongside
+  Bootstrap 4 classes) — the copy drafted in `LISTING.md` was restructured
+  into this shape, not typed fresh.
+- **A cover image** (`images` manifest key) — deliberately **not** added.
+  Optional (it only affects the Apps Store ranking score, see `LISTING.md`
+  "Scoring"), and the two closest real comparables on `OCA/website`
+  (`website_analytics_matomo`, `website_cookiebot`) ship without one; the one
+  OCA module that does declare one (`website_google_tag_manager`) points at a
+  file that 404s in the published repository. This module has no UI of its
+  own to screenshot, so a cover here would be exactly what the FAQ says not
+  to do — *"a full demo page and not your company logo larger"* — the logo,
+  larger. See `LISTING.md` "Why no cover image" for the measurement.
 - Odoo's "Register your Git repository" form itself is sign-in gated (seen
   directly: `apps.odoo.com/apps/upload` shows *"Please sign in to be able to
   register a repository"* to an anonymous request), so the actual registration
   step needs an authenticated apps.odoo.com account — not run as part of this
-  task.
+  task, or the one that added the icon and description page.
 
 ## What a human needs, and for which step
 
@@ -189,13 +209,16 @@ checklist:
 | Push the repo to GitHub as `ciphera-net/pulse-odoo`, branch `20.0` | a GitHub account with create-repo rights on `ciphera-net` | the project's canonical git identity |
 | Authorise Odoo's access | GitHub repo Settings → Collaborators, invite `online-odoo` on this repo specifically | GitHub repo admin |
 | Register the repository | an apps.odoo.com account, signed in, `apps/upload` → "Register your Git repository" with the `ssh://git@github.com/ciphera-net/pulse-odoo#20.0` URL | an Odoo.com account (create one if none exists; this is a separate credential from GitHub) |
-| Add the icon and `static/description/index.html` | the Pulse mark asset pipeline (`pulse-framer/listing/`) | whoever owns that pipeline |
+| Merge `listing-assets` (the icon and `index.html` are already built and committed there) | a reviewer, then a push to `main`/`20.0` | repo admin |
 | Watch for a scan error | re-reading the module page after registering, or after any push | same apps.odoo.com account |
 
 Nothing above was done by this task — it runs under hard limits that forbid
 any remote, push, or publish (see the task's own scope note). This file
 records the exact steps and their prerequisites so a human or a later,
 explicitly-authorised session can execute them without re-deriving any of this.
+The icon and description page themselves no longer need a human — they were
+built locally (see "Still needed before publishing" above) and sit committed
+on `listing-assets`, waiting on exactly the merge-and-push row above.
 
 ## No CI — but `scripts/verify.sh` has now been run for real
 
@@ -209,3 +232,12 @@ distinction. Two defects in the script itself (an HTTP bind-interface default
 Odoo 20.0 changed, and a negative control that was silently installing the
 module it was meant to prove absent) were found and fixed in the course of
 that run; see git log for the commits.
+
+🔴 **The 14-10-2026 listing-assets work did not re-run `scripts/verify.sh`** —
+that task ran under a hard Docker prohibition. `python3 tests/test_pulse_analytics.py`
+was run instead (25/25, unchanged from before) — it does not touch
+`static/description/` at all, so it neither proves nor disproves anything
+about the new icon or index.html. Neither file changes what Odoo renders in a
+page's `<head>`, so there is no reason to expect `scripts/verify.sh`'s result
+to have moved, but it has not been re-measured since these were added — run it
+before trusting that claim for a release.
