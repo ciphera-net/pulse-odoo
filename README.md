@@ -42,7 +42,7 @@ Odoo's own "Custom Code" feature uses** (`website.layout`, the same template
 `custom_code_layout` inherits in Odoo's own source):
 
 ```html
-<script defer src="https://js.ciphera.net/script.js"></script>
+<script defer="defer" src="https://js.ciphera.net/script.js"></script>
 ```
 
 No `data-domain` — the tracker auto-detects the hostname — and no inline
@@ -50,25 +50,31 @@ JavaScript at all, so **a strict Content-Security-Policy needs no nonce and no
 `unsafe-inline` for this module** — only `script-src https://js.ciphera.net`
 and `connect-src https://pulse-api.ciphera.net`.
 
-⚠️ Which exact bytes Odoo's QWeb renderer emits for the boolean `defer`
-attribute — a bare `defer`, like Drupal, or `defer="defer"`, like TYPO3 — and
-whether it writes the element as `<script …></script>` rather than something
-self-closing, are facts about Odoo's HTML serializer, not about this module's
-source, and this repository has no Odoo installed to render through. They are
-exactly what `scripts/verify.sh` asserts against a real Odoo instance, and that
-script's own comments record what it found once it has been run. Don't take
-the snippet above as a byte-for-byte claim until that has happened — see
-`tests/test_pulse_analytics.py`'s module docstring for the same point made
-about the test suite.
+✅ **Confirmed against a real Odoo 20.0 instance** (`scripts/verify.sh`, run in
+Docker): QWeb's HTML serializer writes the boolean `defer` attribute as
+`defer="defer"`, matching the source XML's own spelling byte-for-byte (not
+collapsed to a bare `defer`, the way Drupal's renderer does it) — and the
+element is a real open/close pair, `<script …></script>`, never self-closed.
+These are facts about Odoo's serializer, not this module's source, and were
+unverifiable before an Odoo instance actually rendered the page; they no
+longer are.
 
-**It never reaches the backend, and there is no toggle for that because there
-is nothing to toggle.** `website.layout` is Odoo's public frontend layout.
-Odoo's backend (`/odoo`, `/web`) is an entirely separate Owl/JS client that
-never renders through it, so this module's tag cannot leak onto an admin
-screen by construction — not by an early return that could be gotten wrong,
-and not by a setting that defaults the right way but could be flipped. It does
-render inside the website editor's live preview when someone edits a page,
-which is real frontend content, not an admin screen, so that is correct too.
+**It never reaches the authenticated backend, and there is no toggle for that
+because there is nothing to toggle — but it DOES reach the public login page,
+and that is correct, not a leak.** `website.layout` is Odoo's public frontend
+layout. The authenticated backend (the Owl/JS SPA at `/odoo`, and `/web` once
+logged in) is a client-rendered app that never server-renders through
+`website.layout` at all, so this module's tag cannot reach it by
+construction — confirmed by actually logging in and reading that page, not
+merely assumed. `/web/login` itself is a different story: when the `website`
+module is installed (this module depends on it, so it always is), Odoo's own
+`website` controller overrides `/web/login` to render through `website.layout`
+for a themed, on-brand login page — the same anchor this module's tag is
+attached to, and the same one Odoo's own Custom Code field would reach too.
+So the tag appears on the pre-login form (a page anyone, logged in or not, can
+load), but not on anything behind it. It does render inside the website
+editor's live preview when someone edits a page, which is real frontend
+content, not an admin screen, so that is correct too.
 
 **It runs on every page the Website app serves**, including a page rendered on
 behalf of eCommerce, the blog, the forum, or any other Odoo app that builds its

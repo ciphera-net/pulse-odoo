@@ -8,11 +8,12 @@
         Odoo 20.0 source before this was written (RELEASING.md records how).
 
         Deliberately static: no t-if, t-esc or t-att anywhere in this file.
-        The element below is exactly the bytes that land in the page, modulo
-        whatever QWeb's HTML serializer does with the "defer" attribute and
-        attribute order — see tests/test_pulse_analytics.py and
-        scripts/verify.sh for what is actually asserted versus merely
-        intended here.
+        The element below is exactly the bytes that land in the page. Odoo
+        20.0's QWeb serializer writes the "defer" attribute back out exactly
+        as spelled here (defer="defer", not collapsed to a bare defer) and
+        does not self-close the element — confirmed against a real instance
+        by scripts/verify.sh; see tests/test_pulse_analytics.py for what is
+        asserted at the source-XML level without Odoo installed.
 
         No data-domain attribute: the tracker auto-detects the hostname from
         the visitor's browser. This module offers no domain setting — see

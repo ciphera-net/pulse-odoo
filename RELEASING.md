@@ -197,11 +197,15 @@ any remote, push, or publish (see the task's own scope note). This file
 records the exact steps and their prerequisites so a human or a later,
 explicitly-authorised session can execute them without re-deriving any of this.
 
-## No CI, no Docker, in this task
+## No CI — but `scripts/verify.sh` has now been run for real
 
-Per the task's hard limits, this repository has no CI configured and
-`scripts/verify.sh` has not been run — it needs Docker, which this task was
-explicitly told not to use ("the Docker VM is shared and small; real-install
-verification happens later, one platform at a time"). Run it when that
-later, dedicated pass happens; see its own header comment for exactly what it
-asserts and why.
+This repository still has no CI configured (same reasoning as pulse-drupal:
+Odoo Apps' only gate is a registration-time manifest scan, not a test run).
+`scripts/verify.sh` has since been run for real, in Docker, against
+`odoo:20.0` — see its own header comment and README.md's "Three things worth
+knowing" for what it found: the exact serialized bytes of the `defer`
+attribute, and the website-rendered-login-page vs. authenticated-backend
+distinction. Two defects in the script itself (an HTTP bind-interface default
+Odoo 20.0 changed, and a negative control that was silently installing the
+module it was meant to prove absent) were found and fixed in the course of
+that run; see git log for the commits.

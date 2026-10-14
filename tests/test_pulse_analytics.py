@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 """Standalone checks for the pulse_analytics module — no Odoo required.
 
-There is no Odoo installed in this environment (no odoo binary, no
-Postgres service wired up for it), so these tests cannot do what Drupal's
+There is no Odoo installed in THIS environment (no odoo binary, no Postgres
+service wired up for it), so these tests cannot do what Drupal's
 TagRenderTest or Joomla's scripts/verify.sh do: boot the real framework and
-read back the HTML it renders. That gap is real and is not papered over here
-— scripts/verify.sh is where a real Odoo renders this module's template and
-the shipped bytes get asserted. Run these first; run that before trusting a
-release.
+read back the HTML it renders. scripts/verify.sh is where a real Odoo (in
+Docker) renders this module's template and the shipped bytes get asserted —
+it has now been run for real, and confirmed: QWeb's serializer writes
+defer="defer" (matching this file's own source spelling, not collapsed to a
+bare `defer`), the element is not self-closed, and the tag reaches the
+homepage and the public /web/login page (website-rendered, by design — see
+README.md) but never the authenticated backend SPA. Run these tests first;
+run scripts/verify.sh before trusting a release regardless, since these
+cannot see Odoo's renderer at all.
 
 What these tests CAN prove without Odoo, because the module is pure XML and
 a static manifest:
@@ -21,13 +26,13 @@ a static manifest:
     __init__.py, which is the entire basis for the Odoo Online claim this
     module is built around.
 
-What they cannot prove: whether Odoo's QWeb HTML serializer emits a bare
-`defer` or `defer="defer"` for the boolean attribute above, whether it
-self-closes the <script> tag (which would be a broken page, not a missing
-attribute — see the comment in pulse_tracker.xml), or whether the tag
-actually reaches a rendered homepage and stays off an admin one. Those are
-scripts/verify.sh's job precisely because they depend on Odoo's renderer,
-not on this source.
+What they cannot prove on their own, and what scripts/verify.sh asserts
+instead: the exact serialized bytes of the boolean `defer` attribute and
+whether the element self-closes (both depend on Odoo's QWeb renderer, not
+this source), and where the tag actually reaches once a real Website app
+and a real backend exist to tell apart — a plain string search over the
+source XML cannot distinguish "the homepage" from "the admin screen" the
+way a real served page can.
 
 Run:
     python3 tests/test_pulse_analytics.py

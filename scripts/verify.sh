@@ -2,14 +2,17 @@
 # Installs a real Odoo, activates this module, and reads the tag out of a
 # served public page.
 #
-# 🔴 NOT RUN as part of building this module. This repository's own task
-# forbids Docker ("the Docker VM is shared and small; real-install
-# verification happens later, one platform at a time") — this script is that
-# later, dedicated pass. Read it before running it; it records in comments
-# exactly what it assumes versus what it asserts, and the things this
-# repository could not verify without Odoo installed (see README.md's note on
-# the exact bytes of the `defer` attribute, and tests/test_pulse_analytics.py's
-# module docstring for the general shape of that gap).
+# ✅ RUN for real, in Docker, against odoo:20.0 — see README.md and
+# tests/test_pulse_analytics.py's module docstring for what it found (the
+# exact bytes of the `defer` attribute, and the website-rendered /web/login
+# vs. authenticated-backend distinction). The first real run surfaced two
+# defects in THIS SCRIPT, both fixed and recorded in git history: the served
+# container only bound to its own loopback (Odoo 20.0 changed
+# --http-interface's default), and the negative-control database was
+# silently getting this module installed too. A third finding changed what
+# is asserted, not just the harness: /web/login turned out to be
+# website-rendered (Odoo's own doing, not a module bug), so the "no tag on
+# /web" check now targets the actual authenticated backend SPA instead.
 #
 #   ./scripts/verify.sh              # odoo:20.0 against postgres:16 by default
 #   ODOO_IMAGE=odoo:20.0 ./scripts/verify.sh
@@ -192,8 +195,19 @@ for _ in $(seq 1 60); do
 done
 
 HOME_HTML=$(curl -s "http://127.0.0.1:${HTTP_PORT}/")
-# Odoo's backend/login surface — never the site this module targets.
-LOGIN_HTML=$(curl -s "http://127.0.0.1:${HTTP_PORT}/web/login")
+# NOT the backend — see the big comment below. Kept under this name only
+# because that is genuinely what the URL is for (the login FORM), not because
+# it renders through the same thing the authenticated backend does.
+#
+# -c/-b on this SAME jar from the first GET onward: Odoo's CSRF token is
+# bound to the session cookie it was issued alongside, so the later login
+# POST must present the identical cookie this GET received or the CSRF check
+# silently rejects the login (no error — just the login page again), which
+# is exactly what the first attempt at this flow did wrong: it fetched
+# LOGIN_HTML without saving a cookie at all, so the POST below carried a
+# csrf_token tied to a session nobody still had.
+BACKEND_COOKIEJAR="$WORK/backend-cookies.txt"
+LOGIN_HTML=$(curl -s -c "$BACKEND_COOKIEJAR" -b "$BACKEND_COOKIEJAR" "http://127.0.0.1:${HTTP_PORT}/web/login")
 
 # A "not present" result from an empty/failed fetch is not evidence — it is a
 # timeout wearing the same face as a real negative. Every absence check below
@@ -207,7 +221,7 @@ require_real_page() {
   fi
 }
 require_real_page "the homepage" "$HOME_HTML"
-require_real_page "the backend login page" "$LOGIN_HTML"
+require_real_page "the login page" "$LOGIN_HTML"
 
 echo
 echo "==> checking the served HTML"
@@ -242,11 +256,55 @@ else
   check_fail "expected exactly one ciphera script tag, found $SCRIPT_COUNT"
 fi
 
-# Negative control, same page: the backend must carry nothing.
+# ── /web/login is NOT the backend — it is website-rendered ──────────────────
+# First real run of this script asserted /web/login must carry no "ciphera"
+# reference and found one, because it assumed (so did this module's own
+# README) that everything under /web is the Owl/JS backend client. It is not:
+# when the `website` module is installed — which this module depends on, so
+# it always is — Odoo's own `website` controller OVERRIDES /web/login to
+# render through `website.layout` for a themed, on-brand login page (title
+# "Login | My Website", og:site_name etc. — confirmed by reading the response
+# body, not assumed). That is the exact anchor this module's own tag is
+# attached to, so it reaching /web/login is not a leak: it is the same
+# mechanism by which Odoo's own built-in "Custom Code" head/footer injection
+# would reach that page too. The real question the README is actually trying
+# to answer — "can this tag reach an authenticated admin screen" — is answered
+# below, against the real backend, not this page. See README.md for the
+# corrected wording.
 if printf '%s' "$LOGIN_HTML" | grep -qi 'ciphera'; then
-  check_fail "the backend login page carries a reference to ciphera — this module must never reach /web"
+  check_pass "the website-rendered /web/login page DOES carry the tag, as expected (it inherits website.layout, same as Odoo's own Custom Code field would)"
 else
-  check_pass "the backend carries no reference to ciphera"
+  check_fail "the website-rendered /web/login page unexpectedly carries NO ciphera reference — if Odoo stopped theming this route through website.layout, update README.md's claim about it accordingly"
+fi
+
+# ── The actual backend: log in and read the authenticated Owl/JS SPA ────────
+# This is the check the README's claim is really about. /odoo (and /web once
+# authenticated) is the SPA client itself — it does not server-render through
+# website.layout at all, so no inherited view, this module's included, can
+# reach it. Proven by actually logging in, not by trusting the claim: Odoo's
+# own default fresh-database admin credentials (admin/admin — a well-known
+# Odoo convention, not a secret, and this database is destroyed with the rest
+# of this script's fixtures) against this throwaway, network-isolated instance.
+LOGIN_CSRF=$(printf '%s' "$LOGIN_HTML" | grep -oE 'name="csrf_token" value="[^"]*"' | sed -E 's/.*value="([^"]*)".*/\1/')
+if [ -z "$LOGIN_CSRF" ]; then
+  echo "REFUSING: could not find a csrf_token on the login page — cannot prove the backend check below means anything"
+  exit 1
+fi
+curl -s -c "$BACKEND_COOKIEJAR" -b "$BACKEND_COOKIEJAR" \
+  --data-urlencode "login=admin" --data-urlencode "password=admin" \
+  --data-urlencode "csrf_token=$LOGIN_CSRF" \
+  -o /dev/null "http://127.0.0.1:${HTTP_PORT}/web/login"
+BACKEND_HTML=$(curl -s -b "$BACKEND_COOKIEJAR" "http://127.0.0.1:${HTTP_PORT}/odoo")
+require_real_page "the authenticated backend" "$BACKEND_HTML"
+if ! printf '%s' "$BACKEND_HTML" | grep -qE '<title>\s*Odoo\s*</title>'; then
+  echo "REFUSING: the admin/admin login did not actually reach the backend (no <title>Odoo</title>) — fix the login flow before trusting this check"
+  exit 1
+fi
+
+if printf '%s' "$BACKEND_HTML" | grep -qi 'ciphera'; then
+  check_fail "the authenticated backend SPA carries a reference to ciphera — this module must never reach /odoo"
+else
+  check_pass "the authenticated backend SPA (/odoo, post-login) carries no reference to ciphera"
 fi
 
 # ── Second positive instance, against the control database: no module, no tag ─
