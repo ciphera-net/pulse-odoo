@@ -165,17 +165,22 @@ rather than guessed — see `LISTING.md` "Screenshots and images needed before
 publishing" for the full detail and the "Why no cover image" / "Why no
 hyperlinks" sections for the two things deliberately left out:
 
-- **`pulse_analytics/static/description/icon.png`** — done. From the FAQ:
+- **`pulse_analytics/static/description/icon.png`**: done. From the FAQ:
   *"the module icon needs to be located at `static/description/icon.png`...
   Please note that changing the file extension of an image does not change
-  its format"* (it must be a real PNG, not a renamed one) — satisfied: a real
-  128×128 RGBA PNG, built by resizing the Pulse mark (not drawn fresh), with
-  Pillow's Lanczos filter, no Docker involved. The FAQ names no size, so
-  128×128 was read directly off three real, accepted free Odoo modules
-  (`OCA/website`'s `website_analytics_matomo`, `website_cookiebot`,
-  `website_require_login`, all 128×128 with a transparent corner — core Odoo
-  modules measure 100×100, one OCA module 70×70, so "square and transparent"
-  is the invariant, not one exact pixel count).
+  its format"* (it must be a real PNG, not a renamed one). Satisfied: a real
+  128×128 RGB PNG with no alpha channel, the Pulse mark on the dark ground
+  `#0a0a0a`, copied unchanged from Ciphera's brand set, revision v6
+  (`https://cdn.ciphera.net/brand/v6/kit/odoo/pulse/icon.png`). It is not
+  drawn or resized here. The FAQ names no size, so 128×128 was read directly
+  off three real, accepted free Odoo modules (`OCA/website`'s
+  `website_analytics_matomo`, `website_cookiebot`, `website_require_login`, all
+  128×128 with a transparent corner; core Odoo modules measure 100×100 and one
+  OCA module 70×70, so "square and transparent" is the invariant, not one
+  exact pixel count). This icon keeps the size and the square but not the
+  transparency: it sits on a solid dark tile by design. The file built on
+  14-10-2026 was the transparent RGBA version, and this one replaced it on
+  19-10-2026.
 - **`pulse_analytics/static/description/index.html`** — done. The FAQ:
   *"The rich-text HTML description comes from the static/description/index.html
   file ... It is recommended to start with this official template"*, linking
@@ -229,11 +234,12 @@ Odoo 20.0 changed, and a negative control that was silently installing the
 module it was meant to prove absent) were found and fixed in the course of
 that run; see git log for the commits.
 
-🔴 **The 14-10-2026 listing-assets work did not re-run `scripts/verify.sh`** —
-that task ran under a hard Docker prohibition. `python3 tests/test_pulse_analytics.py`
-was run instead (25/25, unchanged from before) — it does not touch
-`static/description/` at all, so it neither proves nor disproves anything
-about the new icon or index.html. Neither file changes what Odoo renders in a
-page's `<head>`, so there is no reason to expect `scripts/verify.sh`'s result
-to have moved, but it has not been re-measured since these were added — run it
-before trusting that claim for a release.
+🟢 **`scripts/verify.sh` was re-run on 19-10-2026 with the icon and
+`index.html` in place.** The 14-10-2026 listing-assets work did not re-run it,
+because that task ran under a hard Docker prohibition. It ran
+`python3 tests/test_pulse_analytics.py` instead (25/25), which does not touch
+`static/description/` at all. Neither file changes what Odoo renders in a
+page's `<head>`, and the re-run agrees: against `odoo:20.0` (Odoo
+20.0-20261015) with `postgres:16` it ended with `ALL CHECKS PASSED`. The script
+does not check the icon, so that result shows the module still installs and
+serves the same tag. It says nothing about how the icon renders in the store.

@@ -116,19 +116,21 @@ Website `https://pulse.ciphera.net` · Documentation
 🟢 **Icon and description page built** (see below); the cover image was
 deliberately **not** added — see "Why no cover image" below.
 
-- **`static/description/icon.png`** — ✅ done. 128×128 PNG, RGBA, transparent
-  background, the Pulse mark alone (never paired with Odoo's own mark). The
-  size was not guessed: `static/description/icon.png` was read directly off
-  three real, accepted free modules on the Odoo Apps store (measured
-  14-10-2026) — `OCA/website`'s `website_analytics_matomo` (the closest
-  comparable, an analytics module) and `website_cookiebot` are both **128×128
-  with a transparent corner**; `website_require_login` matches; Odoo's own
-  core `website`/`website_sale`/`website_blog` modules use 100×100 and OCA's
-  `website_google_tag_manager` uses 70×70 — all square, all transparent, none
-  on a solid tile. Built from `thumbnail-480-transparent.png` (the Pulse mark
-  on a transparent 480×480 tile, from the 12-10-2026 Product Hunt asset set),
-  resized down with Pillow's Lanczos filter — not the `-dark` variant, because
-  every real icon measured has a transparent corner, not a solid background.
+- **`static/description/icon.png`**: ✅ done. 128×128 PNG, RGB with no alpha
+  channel: the Pulse mark alone (never paired with Odoo's own mark) on the
+  dark ground `#0a0a0a`. The file is copied unchanged from Ciphera's brand
+  set, revision v6
+  (`https://cdn.ciphera.net/brand/v6/kit/odoo/pulse/icon.png`), and is not
+  resized or re-encoded here. The size was not guessed:
+  `static/description/icon.png` was read directly off three real, accepted
+  free modules on the Odoo Apps store (measured 14-10-2026).
+  `OCA/website`'s `website_analytics_matomo` (the closest comparable, an
+  analytics module) and `website_cookiebot` are both **128×128 with a
+  transparent corner**; `website_require_login` matches; Odoo's own core
+  `website`/`website_sale`/`website_blog` modules use 100×100 and OCA's
+  `website_google_tag_manager` uses 70×70. All of them are square and
+  transparent, none on a solid tile. This icon matches them on size and shape
+  but sits on a solid dark tile by design, so it has no transparent corner.
 - **`static/description/index.html`** — ✅ done. Built from the exact template
   `apps.odoo.com/apps/faq` names as official
   (`github.com/odoo/odoo/blob/11.0/addons/crm/static/description/index.html`):
