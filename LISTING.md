@@ -34,7 +34,7 @@ confirmed in `tests/test_pulse_analytics.py`).
 
 ## Short description (the `summary` manifest key)
 
-> Privacy-first web analytics. No cookies, no personal data, under 3 KB.
+> Privacy-first web analytics. No cookies, no IP addresses stored, under 3 KB.
 
 ## Long description (for `static/description/index.html`)
 
@@ -47,7 +47,7 @@ all per the vendor guidelines' "Guidelines for the app's description page."
 ---
 
 Pulse Analytics adds privacy-first web analytics to an Odoo website with one
-module. It sets no cookies, stores no personal data, and the script it adds to
+module. It sets no cookies, never stores IP addresses, and the script it adds to
 your pages is under 3 KB.
 
 **How it works**
