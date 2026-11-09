@@ -62,11 +62,11 @@ Pulse counts pageviews, referrers, countries, devices, time on page and scroll d
 
 **You need**
 
-Odoo 20.0 with the Website app, and a Pulse Analytics account with a site registered for the same domain. The free plan covers one site and 10,000 events a month, and you do not need a card. Every plan has every feature. Business starts at €9 a month with VAT.
+Odoo 20.0 or 19.0 with the Website app, and a Pulse Analytics account with a site registered for the same domain. The free plan covers one site and 10,000 events a month, and you do not need a card. Every plan has every feature. Business starts at €9 a month with VAT.
 
 **What this module does not do, by design**
 
-This module has no settings screen. It is written entirely in XML, with no Python beyond the one empty file every Odoo module requires, so it also installs on Odoo Online, which does not allow third-party modules that contain custom Python. If you need to pin a specific domain, add the interaction-events script, or route events through a custom API origin, paste the full tag into Odoo's own **Website → Configuration → Settings → SEO → Custom Code → Header** field instead. This module's README explains how and why.
+This module has no settings screen. It is written entirely in XML, with no Python beyond the one empty file every Odoo module requires. If you need to pin a specific domain, add the interaction-events script, or route events through a custom API origin, paste the full tag into Odoo's own **Website → Configuration → Settings → SEO → Custom Code → Header** field instead. This module's README explains how and why.
 
 Pulse Analytics is built by Ciphera, a company in Belgium. Data is hosted in Switzerland.
 
