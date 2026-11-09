@@ -37,7 +37,7 @@ source directly (both `models/website.py` and `views/website_templates.xml`)
 and are structurally identical to 19.0's — nothing here was invalidated by the
 version correction, only the target series number.
 
-## Odoo does not pre-review, and there is no CI pipeline here
+## Odoo does not pre-review; CI runs the module tests
 
 Verbatim from `apps.odoo.com/apps/faq` ("Are there any specific rules that
 Apps authors must observe?"):
@@ -45,12 +45,12 @@ Apps authors must observe?"):
 > *"We do not currently review every module published, but we do take action
 > when users report abusive behavior."*
 
-There is no CI registered for this repository, the same reasoning as
-pulse-drupal: Odoo Apps' only gate is a repository **scan** at registration
-and on every push (it raises an error on a non-existent dependency or a
-malformed manifest, per the vendor guidelines below), not a test run. `python3
-tests/test_pulse_analytics.py` is this repository's local equivalent, and
-`scripts/verify.sh` is the real-install check nothing else here runs for you.
+Since 09-11-2026 Woodpecker runs the security scan and `python3
+tests/test_pulse_analytics.py` on every pull request and push to `main`. Odoo
+Apps' own gate is only a repository **scan** at registration and on every push
+(it raises an error on a non-existent dependency or a malformed manifest, per
+the vendor guidelines below), not a test run, and `scripts/verify.sh` is the
+real-install check nothing else here runs for you.
 
 ## Registering the repository — verbatim facts, from the strategy doc and re-confirmed live
 
@@ -221,10 +221,9 @@ hyperlinks" sections for the two things deliberately left out:
 What is left is the registration itself: an apps.odoo.com account, then
 `apps/upload` → "Register your Git repository" with the `20.0` URL above.
 
-## No CI — but `scripts/verify.sh` has now been run for real
+## `scripts/verify.sh` has been run for real
 
-This repository still has no CI configured (same reasoning as pulse-drupal:
-Odoo Apps' only gate is a registration-time manifest scan, not a test run).
+CI runs the module tests only (see above); the real install is this script.
 `scripts/verify.sh` has since been run for real, in Docker, against
 `odoo:20.0` — see its own header comment and README.md's "Three things worth
 knowing" for what it found: the exact serialized bytes of the `defer`
