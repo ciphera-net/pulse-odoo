@@ -208,13 +208,22 @@ hyperlinks" sections for the two things deliberately left out:
   step needs an authenticated apps.odoo.com account — not run as part of this
   task, or the one that added the icon and description page.
 
+## The description page must stay ASCII-only
+
+apps.odoo.com reads `static/description/index.html` as Latin-1 and writes it out as UTF-8, so
+every non-ASCII character arrives garbled. Measured on the live page on 09-11-2026, the day the
+module went live: the euro sign showed as three characters starting with "â", and the
+no-break space in "3 KB" gained a stray "Â". Write such characters as HTML entities
+(`&euro;`, `&nbsp;`); `tests/test_pulse_analytics.py` fails on any non-ASCII byte in the file.
+After a fix lands on `20.0`, the store shows it once the repository is scanned again.
+
 ## What a human needs, and for which step
 
 | Step | Needs | Who/what |
 |---|---|---|
 | ✅ Push the repo to GitHub as `ciphera-net/pulse-odoo`, branch `20.0` (done 14-10-2026) | a GitHub account with create-repo rights on `ciphera-net` | the project's canonical git identity |
 | ✅ Authorise Odoo's access (invite sent 14-10-2026, read-only) | GitHub repo Settings → Collaborators, invite `online-odoo` on this repo specifically | GitHub repo admin |
-| Register the repository | an apps.odoo.com account, signed in, `apps/upload` → "Register your Git repository" with the `ssh://git@github.com/ciphera-net/pulse-odoo#20.0` URL | an Odoo.com account (create one if none exists; this is a separate credential from GitHub) |
+| ✅ Register the repository (09-11-2026; live and searchable the same day) | an apps.odoo.com account, signed in, `apps/upload` → "Register your Git repository" with `ssh://git@github.com/ciphera-net/pulse-odoo.git#20.0` | the odoo.com account behind `ciphera.odoo.com` |
 | ✅ Icon and `index.html` on `main`/`20.0` (14-10-2026) | a reviewer, then a push | repo admin |
 | Watch for a scan error | re-reading the module page after registering, or after any push | same apps.odoo.com account |
 

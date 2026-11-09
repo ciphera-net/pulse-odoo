@@ -6,9 +6,11 @@ the scan picks it up) will use. Not yet submitted — see RELEASING.md "Still
 needed before publishing" and "What a human needs" for what is outstanding and
 why it was not done here.
 
-**Status:** 🔴 **NOT SUBMITTED.** The task that produced this module forbids any
-remote, push or publish action; this file is the copy ready for whoever runs
-that step, matching the pattern of `pulse-joomla/LISTING.md`.
+**Status:** 🟢 **LIVE since 09-11-2026** at
+`https://apps.odoo.com/apps/modules/20.0/pulse_analytics`, from the repository registered as
+`ssh://git@github.com/ciphera-net/pulse-odoo.git#20.0`. The store shows the description
+page from `static/description/index.html` on the `20.0` branch, which must stay ASCII-only
+(see RELEASING.md).
 
 🟢 **`static/description/icon.png` and `static/description/index.html` now
 exist** (on `main` and `20.0` since 14-10-2026) — see "Screenshots
