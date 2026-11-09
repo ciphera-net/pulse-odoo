@@ -34,7 +34,7 @@ confirmed in `tests/test_pulse_analytics.py`).
 
 ## Short description (the `summary` manifest key)
 
-> Privacy-first web analytics. No cookies, no IP addresses stored, under 3 KB.
+> Pulse Analytics counts visitors without cookies or stored IP addresses. The script this module adds is under 3 KB.
 
 ## Long description (for `static/description/index.html`)
 
@@ -46,46 +46,27 @@ all per the vendor guidelines' "Guidelines for the app's description page."
 
 ---
 
-Pulse Analytics adds privacy-first web analytics to an Odoo website with one
-module. It sets no cookies, never stores IP addresses, and the script it adds to
-your pages is under 3 KB.
+Pulse Analytics adds privacy-first web analytics to an Odoo website with one module. It sets no cookies and never stores IP addresses. The script it adds to your pages is under 3 KB.
 
 **How it works**
 
 1. Install the module. There is nothing to configure.
-2. The tracking tag is added to every page your Website app serves,
-   automatically. It reads the domain from each visitor's own browser, which
-   is correct for a site served on one domain.
-3. Create a free account at pulse.ciphera.net, register your site, and your
-   dashboard starts showing visitors as they arrive.
+2. The module adds the tracking tag to every page your Website app serves. It reads the domain from each visitor's own browser, which is right for a site served on one domain.
+3. Create a free account at pulse.ciphera.net, register your site, and your dashboard starts showing visitors as they arrive.
 
 **What it measures**
 
-Pageviews, referrers, countries, devices, time on page and scroll depth, plus
-the goals, funnels and campaigns you set up — in one dashboard, hosted in
-Europe. Visitors whose browser sends Do Not Track or Global Privacy Control are
-not counted at all. The Odoo backend is never tagged; this module only ever
-touches the public website.
+Pulse counts pageviews, referrers, countries, devices, time on page and scroll depth, plus the goals, funnels and campaigns you set up, in one dashboard hosted in Europe. It does not count visitors whose browser sends Do Not Track or Global Privacy Control. The module never tags the Odoo backend and only touches the public website.
 
 **You need**
 
-Odoo 20.0 with the Website app, and a Pulse Analytics account with a site
-registered for the same domain. The free plan is enough to start: one site,
-5,000 pageviews a month, no card required. Every feature is available on every
-plan; paid plans begin at €11/month for more volume.
+Odoo 20.0 with the Website app, and a Pulse Analytics account with a site registered for the same domain. The free plan covers one site and 10,000 events a month, and you do not need a card. Every plan has every feature. Business starts at €9 a month with VAT.
 
 **What this module does not do, by design**
 
-This module has no settings screen — it is written entirely in XML, with no
-Python beyond the one empty file every Odoo module requires, so that it also
-installs on Odoo Online, which does not allow third-party modules that contain
-custom Python. If you need to pin a specific domain, add the interaction-events
-script, or route through a custom API origin, paste the full tag into Odoo's
-own **Website → Configuration → Settings → SEO → Custom Code → Header** field
-instead — see this module's README for exactly how and why.
+This module has no settings screen. It is written entirely in XML, with no Python beyond the one empty file every Odoo module requires, so it also installs on Odoo Online, which does not allow third-party modules that contain custom Python. If you need to pin a specific domain, add the interaction-events script, or route events through a custom API origin, paste the full tag into Odoo's own **Website → Configuration → Settings → SEO → Custom Code → Header** field instead. This module's README explains how and why.
 
-Pulse Analytics is built by Ciphera, a company in Belgium. Data is hosted in
-Switzerland.
+Pulse Analytics is built by Ciphera, a company in Belgium. Data is hosted in Switzerland.
 
 Documentation: <https://docs.ciphera.net/pulse>
 
