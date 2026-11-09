@@ -48,6 +48,8 @@ not need a card.
     'data': [
         'views/pulse_tracker.xml',
     ],
+    # The store's cover image (thumbnail). Its absence costs a ranking point.
+    'images': ['static/description/cover.png'],
     'installable': True,
     # A feature added to the Website app, not a standalone application in its
     # own right — it should not get a tile in the Odoo Apps launcher.

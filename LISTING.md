@@ -96,8 +96,8 @@ Website `https://pulse.ciphera.net` · Documentation
 
 ## Screenshots and images needed before publishing
 
-🟢 **Icon and description page built** (see below); the cover image was
-deliberately **not** added — see "Why no cover image" below.
+🟢 **Icon, description page and cover image built** (see below). The cover was added on 09-11-2026, the day
+the store scored the module 4/5 for lacking one: see "Cover image" below.
 
 - **`static/description/icon.png`**: ✅ done. 128×128 PNG, RGB with no alpha
   channel: the Pulse mark alone (never paired with Odoo's own mark) on the
@@ -128,24 +128,18 @@ deliberately **not** added — see "Why no cover image" below.
   which is the shape this module's page follows throughout since there is no
   dashboard screenshot to show.
 
-### Why no cover image
+### Cover image
 
-The manifest's `images` key was **not** added. Measured against the three
-closest real precedents on `OCA/website` (14-10-2026): the directly-comparable
-analytics module, `website_analytics_matomo`, has no `images` key at all;
-neither does `website_cookiebot`. `website_google_tag_manager` does declare
-one (`static/description/website_google_tag_manager.png`) — but that exact
-file **404s** in the published repository, i.e. even an accepted, listed
-module ships a dead reference for this field, which is further evidence it is
-optional and not load-bearing. The FAQ's own description of the field — *"to
-show a full demo page and not your company logo larger"* — describes exactly
-the trap a Pulse cover would fall into: this module has no UI of its own to
-screenshot, so any image here would be the Pulse mark blown up, the one thing
-the guidance says not to do. The icon already carries the mark; a cover adding
-nothing but a bigger copy of it is skipped. (This updates the "should be a
-real screenshot of a Pulse dashboard... not the Pulse logo blown up" line that
-used to be here — RELEASING.md "Still needed before publishing" still listed
-it as outstanding before this measurement.)
+`static/description/cover.png`, declared in the manifest's `images` key: 2400 x 1200 (2:1), the Pulse dashboard
+from the docs' `dashboard-overview` capture (the public demo dashboard), its top left corner set over an orange
+strip on a dark ground. That is the device of the changelog posts and the dashboard's What's new card, scaled to a
+2:1 frame, with no added text. It shows the product, which is what the FAQ asks a cover to do (*"a full demo page
+and not your company logo larger"*); the module itself has no screen of its own.
+
+History: until 09-11-2026 this module shipped without a cover on purpose (the closest OCA analytics modules have
+none, and a cover of the module itself could only have been the logo, larger). On its first day live the store
+scored it 4/5 for exactly that, and the cover was added. Covers on the store measured that day (1200 x 600,
+880 x 440, 1920 x 1080, 1152 x 648, 900 x 506, 540 x 303) are 2:1 or 16:9; the store serves them re-encoded as GIF.
 
 ### Why no hyperlinks in index.html
 
@@ -166,11 +160,8 @@ The vendor guidelines publish five ranking criteria directly: no icon, no cover
 image, no licence set in the manifest, a rating below 3, and a non-HTML
 description (e.g. plain `.rst`) each cost points, independent of anything about
 the module's functionality. This module has `license` set in the manifest, a
-real `icon.png`, and an HTML `index.html` — three of the five addressed. "No
-cover image" is the one still true here, deliberately — see "Why no cover
-image" above for why a Pulse cover would cost more than the ranking point it
-buys (it would be the logo blown up, which the FAQ names as the thing to
-avoid). Rating is outside this task's control until the module has reviews.
+real `icon.png`, an HTML `index.html` and, since 09-11-2026, a cover image: four of
+the five. Rating depends on reviews.
 
 ## Trademark
 

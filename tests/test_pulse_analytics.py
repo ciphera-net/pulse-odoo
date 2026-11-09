@@ -158,6 +158,21 @@ class ManifestTests(unittest.TestCase):
             full_path = os.path.join(MODULE_DIR, rel_path)
             self.assertTrue(os.path.isfile(full_path), f'manifest lists {rel_path!r} but it is not on disk')
 
+    def test_declared_images_exist_and_are_png(self):
+        # apps.odoo.com reads the cover from `images`; a missing file is a scan
+        # error, and a scan error unpublishes every module in the repository.
+        import struct
+        self.assertTrue(self.manifest.get('images'), 'manifest has no cover image (the store marks the module down)')
+        for rel_path in self.manifest['images']:
+            full_path = os.path.join(MODULE_DIR, rel_path)
+            self.assertTrue(os.path.isfile(full_path), f'manifest lists {rel_path!r} but it is not on disk')
+            with open(full_path, 'rb') as fh:
+                head = fh.read(24)
+            self.assertEqual(head[:8], b'\x89PNG\r\n\x1a\n', f'{rel_path!r} is not a PNG')
+            width, height = struct.unpack('>II', head[16:24])
+            self.assertGreaterEqual(width, 560, f'{rel_path!r} is {width} px wide')
+            self.assertEqual(width, 2 * height, f'{rel_path!r} is {width}x{height}, not 2:1')
+
     def test_stays_free(self):
         # "free LGPL app pays nothing" — a concrete guard that nobody adds a
         # price key without a conscious, separate decision to monetize.
