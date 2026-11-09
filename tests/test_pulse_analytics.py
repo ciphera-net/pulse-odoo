@@ -142,7 +142,7 @@ class ManifestTests(unittest.TestCase):
         version = self.manifest['version']
         parts = version.split('.')
         self.assertEqual(len(parts), 5, f'expected <series>.<series>.<maj>.<min>.<patch>, got {version!r}')
-        self.assertEqual(parts[0:2], ['20', '0'], f'manifest version does not start with the 20.0 series: {version!r}')
+        self.assertEqual(parts[0:2], ['19', '0'], f'manifest version does not start with the 19.0 series: {version!r}')
         self.assertTrue(all(p.isdigit() for p in parts), f'version segments must all be numeric: {version!r}')
 
     def test_name_fits_the_store_rule(self):

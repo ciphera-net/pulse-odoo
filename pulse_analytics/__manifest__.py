@@ -4,7 +4,7 @@
     # give as "major-minor-bugfix semantics (e.g. 10.0.1.1.3)". The series
     # prefix is Odoo 20.0, the current stable series — see RELEASING.md for
     # how that was confirmed and why this module does not target 19.0.
-    'version': "20.0.1.0.1",
+    'version': "19.0.1.0.1",
     'category': "Website",
     'summary': "Pulse Analytics counts visitors without cookies or stored IP addresses. The script this module adds is under 3 KB.",
     'description': """
