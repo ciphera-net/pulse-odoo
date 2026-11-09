@@ -1,0 +1,40 @@
+# Runs on pull_request AND on push to main.
+#
+# A workflow that only runs on pull requests checks the proposal and never the
+# branch that ships, so this one runs on both.
+#
+# What this covers: tests/test_pulse_analytics.py, which needs only the Python
+# standard library. It checks the manifest, that the module holds no Python
+# beyond the empty __init__.py (the basis of the Odoo Online claim), and the
+# source XML of the view: one script tag with the exact src and defer.
+#
+# What this does NOT cover: how Odoo renders that XML (the bytes of the defer
+# attribute, where the tag reaches), which needs a real Odoo. Run
+# scripts/verify.sh before a release for that.
+when:
+  - event: pull_request
+  - event: push
+    branch: main
+
+labels:
+  runner: k8s
+
+steps:
+  - name: test
+    image: registry.ops.ciphera.net/mirror/docker.io/library/python:3.13-alpine-f3ebba2ace25@sha256:f3ebba2ace255c93267a0278da88c7f1044432991abc4e6ad20d22e34dd0f8ee
+    backend_options:
+      kubernetes:
+        resources:
+          requests: { memory: 64Mi, cpu: 50m }
+          limits: { memory: 256Mi }
+    commands:
+      - python3 --version
+      # The count is asserted rather than trusted: a run that collects no tests
+      # still exits 0. It is a floor, not an equality: adding tests must never
+      # redden the build.
+      - |
+        python3 tests/test_pulse_analytics.py > /tmp/odoo-test.log 2>&1 || { cat /tmp/odoo-test.log; exit 1; }
+        cat /tmp/odoo-test.log
+        COUNT=$(sed -n 's/^Ran \([0-9][0-9]*\) tests* in .*/\1/p' /tmp/odoo-test.log)
+        echo "unittest collected $COUNT test(s)"
+        [ "$COUNT" -ge 25 ] || { echo "REFUSING: expected at least 25 tests, collected $COUNT. The suite shrank or stopped being collected."; exit 1; }
