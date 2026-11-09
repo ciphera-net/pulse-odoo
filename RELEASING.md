@@ -47,8 +47,8 @@ Apps authors must observe?"):
 
 Since 09-11-2026 Woodpecker runs the security scan and `python3
 tests/test_pulse_analytics.py` on every pull request and push to `main`. Odoo
-Apps' own gate is only a repository **scan** at registration and on every push
-(it raises an error on a non-existent dependency or a malformed manifest, per
+Apps' own gate is only a repository **scan**, at registration and whenever the Scan box is ticked on My Repos
+(a push to `20.0` alone did not start one within 30 minutes, measured 09-11-2026; it raises an error on a non-existent dependency or a malformed manifest, per
 the vendor guidelines below), not a test run, and `scripts/verify.sh` is the
 real-install check nothing else here runs for you.
 
@@ -193,15 +193,9 @@ hyperlinks" sections for the two things deliberately left out:
   of the attributes the vendor guidelines name as permitted alongside
   Bootstrap 4 classes) — the copy drafted in `LISTING.md` was restructured
   into this shape, not typed fresh.
-- **A cover image** (`images` manifest key) — deliberately **not** added.
-  Optional (it only affects the Apps Store ranking score, see `LISTING.md`
-  "Scoring"), and the two closest real comparables on `OCA/website`
-  (`website_analytics_matomo`, `website_cookiebot`) ship without one; the one
-  OCA module that does declare one (`website_google_tag_manager`) points at a
-  file that 404s in the published repository. This module has no UI of its
-  own to screenshot, so a cover here would be exactly what the FAQ says not
-  to do — *"a full demo page and not your company logo larger"* — the logo,
-  larger. See `LISTING.md` "Why no cover image" for the measurement.
+- **A cover image** (`images` manifest key): ✅ added 09-11-2026, the day the store scored the module 4/5 for
+  lacking one. `static/description/cover.png`, 2400 x 1200, the docs' dashboard capture on the orange strip; see
+  `LISTING.md` "Cover image". A test fails if a declared image is missing or is not a 2:1 PNG.
 - Odoo's "Register your Git repository" form itself is sign-in gated (seen
   directly: `apps.odoo.com/apps/upload` shows *"Please sign in to be able to
   register a repository"* to an anonymous request), so the actual registration
