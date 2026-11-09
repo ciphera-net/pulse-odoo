@@ -9,18 +9,19 @@ pages is under 3 KB.
 
 ## Requirements
 
-This module needs Odoo 20.0, the current stable series as of this writing.
-RELEASING.md explains how that was confirmed and why this module does not
-target 19.0 despite earlier plans naming it. It also needs the Website app,
-which is installed by default on a new database. The module has no Composer or
+This module needs Odoo 20.0 or 19.0, and the Website app, which Odoo installs
+together with this module if the database does not have it yet. The `20.0`
+branch holds the 20.0 build and the `19.0` branch the 19.0 build; they differ
+only in the version series in the manifest. The module has no Composer or
 npm dependencies and adds no database tables. The only Python in it is the
 empty file every Odoo module requires. You need a Pulse Analytics account with
 a site registered for the same domain; the free plan is enough to start.
 
 ## Install
 
-On Odoo Online, install it from the Apps screen once this module is listed on
-Odoo Apps (see RELEASING.md). On Odoo.sh or on-premise, use these steps:
+Odoo Online runs the 19 series, so an Odoo Online database can only install the
+19.0 build, once Odoo Apps lists it. Installing on Odoo Online has not been
+tested yet. On Odoo.sh or on-premise, use these steps:
 
 ```bash
 # copy pulse_analytics/ into your addons path, then
@@ -57,8 +58,9 @@ which matches the source XML's own spelling byte for byte. It does not collapse
 the attribute to a bare `defer`, as Drupal's renderer does. The element is a
 real open/close pair, `<script …></script>`, and is never self-closed. These
 are facts about Odoo's serializer. They could not be verified until an Odoo
-instance rendered the page, and they have now been confirmed against a real
-Odoo 20.0 instance (`scripts/verify.sh`, run in Docker).
+instance rendered the page, and they have now been confirmed against real
+Odoo 20.0 and Odoo 19.0 instances (`scripts/verify.sh`, run in Docker, with
+`ODOO_IMAGE=odoo:19.0` for 19).
 
 **The tag never reaches the authenticated backend, and there is no toggle for
 that because there is nothing to toggle. It does reach the public login page,
@@ -162,7 +164,7 @@ own licensing policy force GPL-2.0-or-later/GPL on everything they host (see
 the Drupal, Joomla and TYPO3 READMEs for that constraint). The manifest's
 `license` key is a fixed enum (`GPL-3`, `AGPL-3`, `LGPL-3`, `OPL-1`,
 `Other OSI approved licence`, `Other proprietary`) with no Apache-2.0 value.
-Apache-2.0, which every other public Pulse integration uses, was therefore
+Apache-2.0, which most other public Pulse integrations use, was therefore
 never on the table as a literal choice. It would have had to be declared as the
 vaguer `Other OSI approved licence`. Odoo's own vendor guidelines recommend
 `LGPL-3` "for open source apps", which is the value used here. `LICENSE` at the
