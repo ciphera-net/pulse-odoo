@@ -1,5 +1,25 @@
 # Releasing pulse_analytics (Odoo)
 
+## Two store branches since 09-11-2026: `20.0` and `19.0`
+
+Odoo Online runs the 19 series (odoo.com itself reported `saas~19.3` on
+09-11-2026), and Odoo installs a
+module only when its manifest version starts with the server's series: the
+20.0 build is refused on 19 with "The module pulse_analytics has an
+incompatible version, setting installable=False". A 20.0-only listing could
+therefore not be installed on any Odoo Online database.
+
+- `19.0` is `20.0` plus one commit: the manifest version `19.0.x.y.z` and the
+  test that pins the series. `scripts/verify.sh` passes on `odoo:19.0`
+  (build 19.0-20261102) with it, every check, against the same view file.
+- Apply every change to the module to both branches, and keep the two versions'
+  last three parts equal (`20.0.1.0.1` and `19.0.1.0.1`).
+- The store lists a branch only after it is registered on apps.odoo.com (My
+  Repos, `ssh://git@github.com/ciphera-net/pulse-odoo.git#19.0`), and rescans it
+  only when "Scan" is ticked.
+- The Online install itself is untested: no Odoo Online database was at hand to
+  install it on without side effects.
+
 ## 🔴 Targets Odoo 20.0, not 19.0 — the brief named 19.0 and that is now stale
 
 The task that produced this module said "current series 19.0 (verify)" and
