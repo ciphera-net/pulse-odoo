@@ -327,10 +327,52 @@ class TrackerScriptTests(unittest.TestCase):
         self.assertNotEqual(mutated_script.text.strip(), '')
 
 
+DESCRIPTION_HTML = os.path.join(MODULE_DIR, 'static', 'description', 'index.html')
+
+
+def non_ascii_characters(data):
+    """Every non-ASCII character in `data` (bytes, UTF-8), as (offset, character) pairs."""
+    text = data.decode('utf-8')
+    return [(i, ch) for i, ch in enumerate(text) if ord(ch) > 127]
+
+
+class DescriptionPageTests(unittest.TestCase):
+    """The store page's HTML survives apps.odoo.com's import byte for byte.
+
+    apps.odoo.com reads static/description/index.html as Latin-1 and writes it out
+    as UTF-8, so every non-ASCII character arrives garbled. Measured on the live
+    page on 09-11-2026: the euro sign in "starts at \u20ac9" rendered as three
+    characters starting with "\u00e2", and the no-break space in "3 KB" gained a
+    stray "\u00c2". HTML entities (&euro;, &nbsp;) are plain ASCII and pass
+    through untouched, so the file must contain nothing else.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        with open(DESCRIPTION_HTML, 'rb') as fh:
+            cls.html_bytes = fh.read()
+
+    def test_is_ascii_only(self):
+        found = non_ascii_characters(self.html_bytes)
+        self.assertEqual(
+            found, [],
+            'index.html has non-ASCII characters, which apps.odoo.com garbles; '
+            'write them as HTML entities instead: '
+            + ', '.join(f'U+{ord(ch):04X} at {i}' for i, ch in found),
+        )
+
+    def test_guard_catches_a_euro_sign(self):
+        # Negative control: put the euro sign back the way it was written before
+        # 09-11-2026 and prove the check above would have failed on it.
+        mutated = self.html_bytes.replace(b'&euro;', '\u20ac'.encode('utf-8'))
+        self.assertNotEqual(mutated, self.html_bytes, 'the replace() above did not match: fix the fixture')
+        self.assertEqual([ch for _, ch in non_ascii_characters(mutated)], ['\u20ac'])
+
+
 def main():
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
-    for case in (ManifestTests, PureXmlModuleTests, TrackerScriptTests):
+    for case in (ManifestTests, PureXmlModuleTests, TrackerScriptTests, DescriptionPageTests):
         suite.addTests(loader.loadTestsFromTestCase(case))
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
