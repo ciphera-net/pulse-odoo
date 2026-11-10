@@ -100,10 +100,10 @@ Website `https://pulse.ciphera.net` · Documentation
 the store scored the module 4/5 for lacking one: see "Cover image" below.
 
 - **`static/description/icon.png`**: ✅ done. 128×128 PNG, RGB with no alpha
-  channel: the Pulse mark alone (never paired with Odoo's own mark) on the
-  dark ground `#0a0a0a`. The file is copied unchanged from Ciphera's brand
-  set, revision v6
-  (`https://cdn.ciphera.net/brand/v6/kit/odoo/pulse/icon.png`), and is not
+  channel: the Pulse mark alone (never paired with Odoo's own mark) in white
+  layers on the brand orange `#FD5E0F`, the same mark as Ciphera's profile
+  pictures. The file is copied unchanged from Ciphera's brand set, revision v12
+  (`https://cdn.ciphera.net/brand/v12/kit/odoo/pulse/icon.png`), and is not
   resized or re-encoded here. The size was not guessed:
   `static/description/icon.png` was read directly off three real, accepted
   free modules on the Odoo Apps store (measured 14-10-2026).

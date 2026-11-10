@@ -189,9 +189,9 @@ hyperlinks" sections for the two things deliberately left out:
   *"the module icon needs to be located at `static/description/icon.png`...
   Please note that changing the file extension of an image does not change
   its format"* (it must be a real PNG, not a renamed one). Satisfied: a real
-  128×128 RGB PNG with no alpha channel, the Pulse mark on the dark ground
-  `#0a0a0a`, copied unchanged from Ciphera's brand set, revision v6
-  (`https://cdn.ciphera.net/brand/v6/kit/odoo/pulse/icon.png`). It is not
+  128×128 RGB PNG with no alpha channel, the Pulse mark in white layers on the
+  brand orange `#FD5E0F`, copied unchanged from Ciphera's brand set, revision v12
+  (`https://cdn.ciphera.net/brand/v12/kit/odoo/pulse/icon.png`). It is not
   drawn or resized here. The FAQ names no size, so 128×128 was read directly
   off three real, accepted free Odoo modules (`OCA/website`'s
   `website_analytics_matomo`, `website_cookiebot`, `website_require_login`, all
