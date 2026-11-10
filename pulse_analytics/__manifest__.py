@@ -23,9 +23,8 @@ https://js.ciphera.net/script.js, inside the <head> of every page the Website
 app renders through "website.layout". The tracker auto-detects the domain
 from the visitor's browser. There is no settings screen, because this module
 is written entirely in XML, with no Python files beyond the empty one Odoo
-requires. That also lets it install on Odoo Online, which refuses third-party
-modules that contain custom Python. See the module's README for what that
-trades away and how to work around it if you need to.
+requires. See the module's README for what that trades away and how to work
+around it if you need to.
 
 You need a Pulse Analytics account with a site registered for the same
 domain. The free plan covers one site and 10,000 events a month, and you do

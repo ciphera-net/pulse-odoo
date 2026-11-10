@@ -20,8 +20,8 @@ a site registered for the same domain; the free plan is enough to start.
 ## Install
 
 Odoo Online runs the 19 series, so an Odoo Online database can only install the
-19.0 build, once Odoo Apps lists it. Installing on Odoo Online has not been
-tested yet. On Odoo.sh or on-premise, use these steps:
+19.0 build, which Odoo Apps has listed since 9 November 2026. Installing on Odoo
+Online has not been tested yet. On Odoo.sh or on-premise, use these steps:
 
 ```bash
 # copy pulse_analytics/ into your addons path, then
