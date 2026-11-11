@@ -58,7 +58,7 @@ Pulse Analytics adds privacy-first web analytics to an Odoo website with one mod
 
 **What it measures**
 
-Pulse counts pageviews, referrers, countries, devices, time on page and scroll depth, plus the goals, funnels and campaigns you set up, in one dashboard hosted in Europe. It does not count visitors whose browser sends Do Not Track or Global Privacy Control. The module never tags the Odoo backend and only touches the public website.
+Pulse counts pageviews, referrers, countries, devices, time on page and scroll depth, plus the goals, funnels and campaigns you set up, in one dashboard hosted in Switzerland. It does not count visitors whose browser sends Do Not Track or Global Privacy Control. The module never tags the Odoo backend and only touches the public website.
 
 **You need**
 
