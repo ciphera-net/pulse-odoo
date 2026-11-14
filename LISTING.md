@@ -36,7 +36,7 @@ confirmed in `tests/test_pulse_analytics.py`).
 
 ## Short description (the `summary` manifest key)
 
-> Pulse Analytics counts visitors without cookies or stored IP addresses. The script this module adds is under 3 KB.
+> Pulse Analytics counts visitors without cookies or stored IP addresses. The script this module adds is about 3 KB.
 
 ## Long description (for `static/description/index.html`)
 
@@ -48,13 +48,14 @@ all per the vendor guidelines' "Guidelines for the app's description page."
 
 ---
 
-Pulse Analytics adds privacy-first web analytics to an Odoo website with one module. It sets no cookies and never stores IP addresses. The script it adds to your pages is under 3 KB.
+Pulse Analytics adds privacy-first web analytics to an Odoo website with one module. It sets no cookies and never stores IP addresses. The script it adds to your pages is about 3 KB.
 
 **How it works**
 
 1. Install the module. There is nothing to configure.
 2. The module adds the tracking tag to every page your Website app serves. It reads the domain from each visitor's own browser, which is right for a site served on one domain.
 3. Create a free account at pulse.ciphera.net, register your site, and your dashboard starts showing visitors as they arrive.
+4. Scroll depth, outbound links, file downloads, and clicks, copies and form submits are each switched on or off in your site's settings in Pulse (Settings > General). The tag stays the same, so there is nothing to change here.
 
 **What it measures**
 
