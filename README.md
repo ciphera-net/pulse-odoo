@@ -2,7 +2,7 @@
 
 This module adds privacy-first analytics to an Odoo website. Pulse Analytics
 sets no cookies and never stores IP addresses, and the script it adds to your
-pages is under 3 KB.
+pages is about 3 KB.
 
 [Pulse Analytics](https://pulse.ciphera.net) is built by
 [Ciphera](https://ciphera.net), a company in Belgium, and hosted in Switzerland.
@@ -83,11 +83,14 @@ on behalf of eCommerce, the blog, the forum, or any other Odoo app that builds
 its pages on `website.layout`, which is the one layout the Website app's page
 renderer uses. Together these cover all of this Odoo site's public pages.
 
+## Scroll depth, outbound links, downloads and clicks
+
+Scroll depth, outbound links, file downloads, and clicks, copies and form submits are each switched on or off in your site's settings in Pulse (Settings → General). The tag stays the same, so there is nothing to change here.
+
 ## Why no settings
 
 A Pulse install elsewhere (Drupal, Joomla, TYPO3, Astro and others) lets you
-pin a domain, add a companion script for clicks, copies and form submits, and
-route through a custom API origin. None of those are possible here without
+pin a domain and route through a custom API origin. Neither is possible here without
 writing a Python model field to store the choice. A module with any Python
 beyond the required empty `__init__.py` cannot be installed on Odoo Online,
 which refuses third-party modules containing custom Python
@@ -97,7 +100,7 @@ sold on Odoo Apps cannot be used on Odoo Online, unless they are data-modules
 deliberately. A settings screen here would silently do nothing or only half
 work, so the module does not fake one.
 
-We looked at three things and did not do them, for these reasons:
+We looked at two things and did not do them, for these reasons:
 
 - **A domain field.** `website.website` already carries a `domain` field
   (Website → Configuration → Settings → Website Domain, used for
@@ -114,14 +117,6 @@ We looked at three things and did not do them, for these reasons:
   **Website → Configuration → Settings → SEO → Custom Code → Header** field.
   That field already exists, needs no module, and takes the exact tag with
   whatever attributes you want on it.
-- **The companion script.** It covers clicks, copies and form submits, and the
-  Drupal, Joomla and TYPO3 READMEs describe the same feature. The same
-  constraint applies: a toggle needs somewhere to persist the choice. If you
-  want it, add a second
-  `<script defer src="https://js.ciphera.net/script.interactions.js"></script>`
-  line next to this module's own tag via the Custom Code field above, or fork
-  this module for an on-premise or Odoo.sh install where you control the
-  addons path and can add your own `res.config.settings` field.
 - **A custom API origin.** The same reasoning applies here. If you need one,
   paste it into Custom Code, which is also how Odoo's own cookie-consent gate
   expects a hand-added third-party script to arrive (see below).
