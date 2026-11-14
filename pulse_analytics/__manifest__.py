@@ -4,9 +4,9 @@
     # give as "major-minor-bugfix semantics (e.g. 10.0.1.1.3)". The series
     # prefix is Odoo 20.0, the current stable series — see RELEASING.md for
     # how that was confirmed and why this module does not target 19.0.
-    'version': "20.0.1.0.1",
+    'version': "20.0.1.0.2",
     'category': "Website",
-    'summary': "Pulse Analytics counts visitors without cookies or stored IP addresses. The script this module adds is under 3 KB.",
+    'summary': "Pulse Analytics counts visitors without cookies or stored IP addresses. The script this module adds is about 3 KB.",
     'description': """
 Pulse Analytics
 ===============
@@ -16,7 +16,7 @@ Adds the Pulse Analytics tracking tag to every public page of this website.
 Pulse Analytics (https://pulse.ciphera.net) is privacy-first web analytics by
 Ciphera BV, a company in Belgium. Data is hosted in Switzerland. It sets no
 cookies and never stores IP addresses, and the tracking script this module
-loads is under 3 KB gzipped.
+loads is about 3 KB gzipped.
 
 What this module does, completely: it adds one <script> tag, pointed at
 https://js.ciphera.net/script.js, inside the <head> of every page the Website
